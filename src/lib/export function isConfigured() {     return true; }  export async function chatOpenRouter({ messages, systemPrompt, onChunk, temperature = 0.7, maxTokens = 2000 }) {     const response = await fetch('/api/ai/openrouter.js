@@ -2,7 +2,7 @@ export function isConfigured() {
     return true;
 }
 
-export async function chatDeepSeek({ messages, systemPrompt, onChunk, temperature = 0.7, maxTokens = 2000 }) {
+export async function chatOpenRouter({ messages, systemPrompt, onChunk, temperature = 0.7, maxTokens = 2000 }) {
     const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -25,7 +25,7 @@ export async function chatDeepSeek({ messages, systemPrompt, onChunk, temperatur
 }
 
 export async function quickInsight(prompt, context = '') {
-    return chatDeepSeek({
+    return chatOpenRouter({
         messages: [{ role: 'user', content: prompt }],
         systemPrompt: `You are Simon, the AI intelligence engine for Truvornex — a premium neighborhood services platform. Be concise, data-driven, and actionable. Use markdown. ${context}`,
         temperature: 0.6,
