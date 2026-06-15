@@ -45,11 +45,11 @@ async function callAI(systemPrompt, userPrompt) {
     const key = process.env.DEEPSEEK_API_KEY;
     if (!key) return null;
     try {
-        const r = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}`, 'HTTP-Referer': 'https://truvornex.com', 'X-Title': 'Truvornex' },
             body: JSON.stringify({
-                model: 'deepseek-chat',
+                model: 'nvidia/nemotron-3-ultra-550b-a55b:free',
                 messages: [
                     { role: 'system', content: systemPrompt },
                     { role: 'user', content: userPrompt },
