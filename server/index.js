@@ -181,11 +181,11 @@ app.post('/api/ai/chat', async (req, res) => {
     }
     const { messages, systemPrompt, temperature = 0.7, maxTokens = 2000 } = req.body;
     try {
-        const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`, 'HTTP-Referer': 'https://truvornex.com', 'X-Title': 'Truvornex' },
             body: JSON.stringify({
-                model: 'deepseek-chat',
+                model: 'nvidia/nemotron-3-ultra-550b-a55b:free',
                 messages: [
                     ...(systemPrompt ? [{ role: 'system', content: systemPrompt }] : []),
                     ...messages,
@@ -941,7 +941,7 @@ app.get('/api/simon/recommendations', async (req, res) => {
 if (isProd) {
     const distPath = path.join(__dirname, '..', 'dist');
     app.use(express.static(distPath));
-    app.use((req, res) => res.sendFile(path.join(distPath, 'index.html')));
+    app.get('*', (req, res) => res.sendFile(path.join(distPath, 'index.html')));
     initDb().then(() => {
         app.listen(PORT, '0.0.0.0', () => console.log(`Truvornex running on port ${PORT}`));
     });
