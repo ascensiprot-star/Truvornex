@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Sparkles, TrendingUp, Users, DollarSign, Star, Lightbulb, Loader2, RefreshCw, Cpu } from 'lucide-react';
-import { chatDeepSeek, isConfigured } from '@/lib/deepseek';
+import { chatOpenRouter as chatDeepSeek, isConfigured } from '@/lib/openrouter';
 import ReactMarkdown from 'react-markdown';
 
 const INSIGHT_TYPES = [
@@ -58,7 +58,7 @@ export default function AIInsights() {
 
     const getInsight = async (type) => {
         if (!isConfigured()) {
-            setInsights(i => ({ ...i, [type.id]: '**DeepSeek not configured** — Add `DEEPSEEK_API_KEY` to unlock Simon AI insights.' }));
+            setInsights(i => ({ ...i, [type.id]: '**OpenRouter not configured** — Add `OPENROUTER_API_KEY` to unlock Simon AI insights.' }));
             return;
         }
         setLoading(l => ({ ...l, [type.id]: true }));
@@ -112,7 +112,7 @@ export default function AIInsights() {
                         Simon Business Intelligence
                     </h1>
                     <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
-                        AI-powered insights to grow your business · DeepSeek
+                        AI-powered insights to grow your business · OpenRouter
                     </p>
                 </div>
             </div>
@@ -144,7 +144,7 @@ export default function AIInsights() {
                                 </div>
                                 <div>
                                     <h2 className="font-semibold text-sm" style={{ color: 'var(--color-primary)' }}>{type.label}</h2>
-                                    <p className="text-[10px]" style={{ color: 'var(--color-text-subtle)' }}>Simon AI · DeepSeek</p>
+                                    <p className="text-[10px]" style={{ color: 'var(--color-text-subtle)' }}>Simon AI · OpenRouter</p>
                                 </div>
                             </div>
                             <button onClick={() => getInsight(type)} disabled={loading[type.id]}
