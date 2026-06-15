@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { predictRepeatBookings } from '@/lib/ai/engine';
-import { chatDeepSeek, isConfigured } from '@/lib/deepseek';
+import { chatOpenRouter as chatDeepSeek, isConfigured } from '@/lib/openrouter';
 import {
     Send, Sparkles, User, Loader2, MapPin, CalendarDays,
     Zap, TrendingUp, Search, Clock, ArrowRight, Cpu, RefreshCw,
@@ -75,7 +75,7 @@ function MessageBubble({ msg }) {
                 )}
                 {!isUser && (
                     <p className="text-[9px] mt-2 opacity-40 font-mono" style={{ color: 'var(--color-text-subtle)' }}>
-                        SIMON · TRUVORNEX · DEEPSEEK
+                        SIMON · TRUVORNEX · OPENROUTER
                     </p>
                 )}
             </div>
@@ -143,7 +143,7 @@ Be precise, data-driven, use markdown formatting with headers and bullet points.
         if (!isConfigured()) {
             setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: '**Simon needs DeepSeek to be configured.** Your `DEEPSEEK_API_KEY` secret powers this AI. Add it in your environment variables and restart the server.',
+                content: '**Simon needs OpenRouter to be configured.** Your `OPENROUTER_API_KEY` secret powers this AI. Add it in your environment variables and restart the server.',
             }]);
             setLoading(false);
             return;
@@ -185,7 +185,7 @@ Be precise, data-driven, use markdown formatting with headers and bullet points.
                             <h1 className="font-bold text-base tracking-tight" style={{ color: 'var(--color-primary)' }}>Simon AI</h1>
                             <span className="text-[9px] px-1.5 py-0.5 rounded-md tracking-wider uppercase"
                                 style={{ border: '1px solid var(--color-border)', color: 'var(--color-text-subtle)' }}>
-                                {isConfigured() ? 'DeepSeek' : 'Demo'}
+                                {isConfigured() ? 'OpenRouter' : 'Demo'}
                             </span>
                             <span className="flex items-center gap-1">
                                 <span className={`h-1.5 w-1.5 rounded-full ${isConfigured() ? 'bg-emerald-500 animate-pulse' : 'bg-zinc-400'}`} />
@@ -232,8 +232,8 @@ Be precise, data-driven, use markdown formatting with headers and bullet points.
                         <h2 className="font-bold text-base mb-1" style={{ color: 'var(--color-primary)' }}>Hello, I'm Simon.</h2>
                         <p className="text-xs max-w-xs mx-auto mb-5 leading-relaxed" style={{ color: 'var(--color-text-muted)' }}>
                             {isConfigured()
-                                ? 'Powered by DeepSeek · Ask me anything about services, providers, or your neighborhood'
-                                : 'Demo mode — add DEEPSEEK_API_KEY to unlock full AI'}
+                                ? 'Powered by OpenRouter · Ask me anything about services, providers, or your neighborhood'
+                                : 'Demo mode — add OPENROUTER_API_KEY to unlock full AI'}
                         </p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-2xl mx-auto text-left">
                             {QUICK_PROMPTS.map(({ icon: Icon, label, prompt }) => (
@@ -293,7 +293,7 @@ Be precise, data-driven, use markdown formatting with headers and bullet points.
                     </button>
                 </div>
                 <p className="text-center text-[9px] mt-2 tracking-widest" style={{ color: 'var(--color-text-subtle)' }}>
-                    SIMON AI · TRUVORNEX INTELLIGENCE ENGINE · DEEPSEEK
+                    SIMON AI · TRUVORNEX INTELLIGENCE ENGINE · OPENROUTER
                 </p>
             </div>
 
