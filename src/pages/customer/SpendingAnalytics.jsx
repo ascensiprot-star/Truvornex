@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import { DollarSign, TrendingUp, Package, Cpu, Loader2, RefreshCw, Sparkles } from 'lucide-react';
-import { chatDeepSeek, isConfigured } from '@/lib/deepseek';
+import { chatOpenRouter as chatDeepSeek, isConfigured } from '@/lib/openrouter';
 import ReactMarkdown from 'react-markdown';
 
 const CHART_COLORS = ['#7c6fcd', '#f59e0b', '#22c55e', '#ef4444', '#06b6d4'];
@@ -54,7 +54,7 @@ export default function SpendingAnalytics() {
 
     const getAiInsight = async () => {
         if (!isConfigured()) {
-            setAiInsight('**DeepSeek not configured** — Add `DEEPSEEK_API_KEY` to your environment variables to unlock Simon AI spending insights.');
+            setAiInsight('**OpenRouter not configured** — Add `OPENROUTER_API_KEY` to your environment variables to unlock Simon AI spending insights.');
             return;
         }
         setAiLoading(true);
@@ -205,7 +205,7 @@ Be specific, data-driven, and actionable. Use markdown formatting.`;
                         </div>
                         <div>
                             <h2 className="font-semibold text-sm" style={{ color: 'var(--color-primary)' }}>Simon's Savings Advice</h2>
-                            <p className="text-[10px]" style={{ color: 'var(--color-text-subtle)' }}>Powered by DeepSeek AI</p>
+                            <p className="text-[10px]" style={{ color: 'var(--color-text-subtle)' }}>Powered by OpenRouter AI</p>
                         </div>
                     </div>
                     <button onClick={getAiInsight} disabled={aiLoading}
@@ -223,7 +223,7 @@ Be specific, data-driven, and actionable. Use markdown formatting.`;
                     </div>
                 ) : (
                     <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
-                        Click "Get AI Advice" for personalized savings recommendations from Simon — powered by DeepSeek AI.
+                        Click "Get AI Advice" for personalized savings recommendations from Simon — powered by OpenRouter AI.
                     </p>
                 )}
             </div>
