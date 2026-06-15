@@ -2,7 +2,7 @@
  * Simon — Truvornex's Hyper-Intelligent AI Engine
  * Entity-aware, platform-native, real-time insights
  */
-import { chatDeepSeek, isConfigured } from '@/lib/deepseek';
+import { chatOpenRouter as chatDeepSeek, isConfigured } from '@/lib/openrouter';
 
 // ─── Entity Schema Knowledge Base ────────────────────────────────────────────
 export const ENTITY_SCHEMAS = {
