@@ -66,7 +66,7 @@ export default function IntroFlow({ onComplete }) {
         if (idx === current || idx < 0 || idx >= SLIDES.length) return;
         setDirection(idx > current ? 1 : -1);
         setExiting(true);
-        setTimeout(() => { setCurrent(idx); setExiting(false); }, 220);
+        setTimeout(() => { setCurrent(idx); setExiting(false); }, 250);
     };
 
     const next = () => isLast ? finish() : goTo(current + 1);
@@ -94,55 +94,89 @@ export default function IntroFlow({ onComplete }) {
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
         >
-            {/* Background grid — identical to home page */}
+            {/* Background grid */}
             <div className="absolute inset-0 pointer-events-none" style={{
                 backgroundImage: 'linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px)',
-                backgroundSize: '48px 48px',
+                backgroundSize: '52px 52px',
             }} />
 
-            {/* Skip */}
-            <div className="absolute top-4 right-4 z-10">
+            {/* Ambient glow */}
+            <div className="absolute inset-0 pointer-events-none" style={{
+                background: 'radial-gradient(ellipse 60% 50% at 50% 40%, rgba(255,255,255,0.02) 0%, transparent 60%)',
+            }} />
+
+            {/* Skip button */}
+            <div className="absolute top-5 right-5 z-10">
                 <button onClick={finish} style={{
-                    fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
-                    color: 'var(--color-text-subtle)', background: 'none', border: 'none',
-                    cursor: 'pointer', padding: '5px 8px', borderRadius: 7,
+                    fontSize: 11.5,
+                    fontWeight: 600,
+                    letterSpacing: '0.05em',
+                    color: 'var(--color-text-subtle)',
+                    background: 'rgba(255,255,255,0.03)',
+                    border: '1px solid var(--color-border)',
+                    cursor: 'pointer',
+                    padding: '6px 12px',
+                    borderRadius: 8,
                     touchAction: 'manipulation',
+                    transition: 'all 0.2s ease',
                 }}>
                     Skip
                 </button>
             </div>
 
             {/* Content */}
-            <div className="flex-1 flex flex-col items-center justify-center px-5 pb-2 relative z-10">
+            <div className="flex-1 flex flex-col items-center justify-center px-6 pb-4 relative z-10">
                 <div style={{
-                    width: '100%', maxWidth: 380,
+                    width: '100%',
+                    maxWidth: 400,
                     opacity: exiting ? 0 : 1,
-                    transform: exiting ? `translateX(${direction > 0 ? '-28px' : '28px'})` : 'translateX(0)',
-                    transition: 'opacity 0.18s ease, transform 0.18s ease',
+                    transform: exiting ? `translateX(${direction > 0 ? '-32px' : '32px'}) scale(0.98)` : 'translateX(0) scale(1)',
+                    transition: 'opacity 0.25s ease, transform 0.25s cubic-bezier(0.19,1,0.22,1)',
                 }}>
-                    {/* Icon */}
-                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18 }}>
+                    {/* Icon container */}
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 24 }}>
                         <div style={{
-                            width: 44, height: 44, borderRadius: 14,
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            backgroundColor: 'var(--color-surface-high)',
+                            width: 64,
+                            height: 64,
+                            borderRadius: 18,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            background: 'linear-gradient(145deg, var(--color-surface-high) 0%, var(--color-surface) 100%)',
                             border: '1px solid var(--color-border-strong)',
-                            boxShadow: 'var(--shadow-sm)',
+                            boxShadow: `
+                                0 8px 32px rgba(0,0,0,0.5),
+                                0 2px 8px rgba(0,0,0,0.4),
+                                inset 0 1px 0 rgba(255,255,255,0.06)
+                            `,
+                            position: 'relative',
                         }}>
-                            <VisualIcon style={{ width: 20, height: 20, color: 'var(--color-primary)' }} />
+                            {/* Subtle glow behind */}
+                            <div style={{
+                                position: 'absolute',
+                                inset: -8,
+                                background: 'radial-gradient(circle, var(--color-accent-glow) 0%, transparent 70%)',
+                                opacity: 0.5,
+                                borderRadius: 24,
+                            }} />
+                            <VisualIcon style={{ width: 26, height: 26, color: 'var(--color-primary)', opacity: 0.9 }} />
                         </div>
                     </div>
 
                     {/* Badge */}
-                    <div style={{ textAlign: 'center', marginBottom: 10 }}>
+                    <div style={{ textAlign: 'center', marginBottom: 12 }}>
                         <span style={{
                             display: 'inline-block',
-                            fontSize: 9, fontWeight: 700, letterSpacing: '0.1em',
+                            fontSize: 9.5,
+                            fontWeight: 700,
+                            letterSpacing: '0.12em',
                             textTransform: 'uppercase',
-                            color: 'var(--color-text-subtle)',
-                            backgroundColor: 'var(--color-surface-high)',
+                            color: 'var(--color-text-muted)',
+                            background: 'linear-gradient(145deg, var(--color-surface-high) 0%, var(--color-surface) 100%)',
                             border: '1px solid var(--color-border-strong)',
-                            padding: '3px 10px', borderRadius: 999,
+                            padding: '5px 14px',
+                            borderRadius: 999,
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
                         }}>
                             {slide.badge}
                         </span>
@@ -150,58 +184,89 @@ export default function IntroFlow({ onComplete }) {
 
                     {/* Title */}
                     <h1 style={{
-                        fontSize: 'clamp(1.15rem, 4.5vw, 1.5rem)',
+                        fontSize: 'clamp(1.45rem, 5.5vw, 1.85rem)',
                         fontWeight: 800,
-                        letterSpacing: '-0.04em',
-                        lineHeight: 1.1,
+                        fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                        letterSpacing: '-0.045em',
+                        lineHeight: 1.08,
                         color: 'var(--color-primary)',
                         textAlign: 'center',
-                        marginBottom: 10,
+                        marginBottom: 14,
                         whiteSpace: 'pre-line',
+                        textRendering: 'geometricPrecision',
                     }}>
                         {slide.title}
                     </h1>
 
                     {/* Subtitle */}
                     <p style={{
-                        fontSize: 12, lineHeight: 1.6,
+                        fontSize: 13.5,
+                        lineHeight: 1.65,
                         color: 'var(--color-text-muted)',
                         textAlign: 'center',
-                        margin: '0 auto 20px',
-                        maxWidth: 320,
-                        letterSpacing: '-0.01em',
+                        margin: '0 auto 24px',
+                        maxWidth: 340,
+                        letterSpacing: '-0.008em',
                     }}>
                         {slide.subtitle}
                     </p>
 
                     {/* Feature list card */}
                     <div style={{
-                        backgroundColor: 'var(--color-surface)',
+                        background: 'linear-gradient(145deg, var(--color-surface) 0%, var(--color-surface-low) 100%)',
                         border: '1px solid var(--color-border-strong)',
-                        borderRadius: 14,
-                        padding: '2px 0',
-                        boxShadow: 'var(--shadow-sm)',
-                        marginBottom: 22,
+                        borderRadius: 18,
+                        padding: '6px 0',
+                        boxShadow: `
+                            0 12px 40px rgba(0,0,0,0.4),
+                            0 4px 12px rgba(0,0,0,0.3),
+                            inset 0 1px 0 rgba(255,255,255,0.04)
+                        `,
+                        marginBottom: 28,
+                        position: 'relative',
+                        overflow: 'hidden',
                     }}>
+                        {/* Subtle inner glow */}
+                        <div style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            width: '60%',
+                            height: 1,
+                            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
+                        }} />
+
                         {slide.features.map(({ icon: Icon, text }, i) => (
                             <div key={i} style={{
-                                display: 'flex', alignItems: 'center', gap: 10,
-                                padding: '10px 14px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 14,
+                                padding: '14px 18px',
                                 borderTop: i === 0 ? 'none' : '1px solid var(--color-border)',
+                                position: 'relative',
                             }}>
+                                {/* Icon container */}
                                 <div style={{
-                                    width: 28, height: 28, borderRadius: 9, flexShrink: 0,
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    backgroundColor: 'var(--color-surface-high)',
+                                    width: 36,
+                                    height: 36,
+                                    borderRadius: 12,
+                                    flexShrink: 0,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    background: 'var(--color-surface-high)',
                                     border: '1px solid var(--color-border-strong)',
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.04)',
                                 }}>
-                                    <Icon style={{ width: 13, height: 13, color: 'var(--color-text-muted)' }} />
+                                    <Icon style={{ width: 16, height: 16, color: 'var(--color-text-muted)', strokeWidth: 1.75 }} />
                                 </div>
                                 <span style={{
-                                    fontSize: 12, lineHeight: 1.45,
-                                    color: 'var(--color-text-muted)',
+                                    fontSize: 13,
+                                    lineHeight: 1.5,
+                                    color: 'var(--color-text)',
                                     fontWeight: 500,
-                                    letterSpacing: '-0.01em',
+                                    letterSpacing: '-0.008em',
                                 }}>
                                     {text}
                                 </span>
@@ -211,37 +276,82 @@ export default function IntroFlow({ onComplete }) {
                 </div>
             </div>
 
-            {/* Bottom nav */}
-            <div style={{ padding: '0 20px 32px', position: 'relative', zIndex: 10 }}>
-                {/* Dots */}
-                <div style={{ display: 'flex', justifyContent: 'center', gap: 5, marginBottom: 14 }}>
+            {/* Bottom navigation */}
+            <div style={{ padding: '0 24px 36px', position: 'relative', zIndex: 10 }}>
+                {/* Dot indicators */}
+                <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 20 }}>
                     {SLIDES.map((_, i) => (
                         <button key={i} onClick={() => goTo(i)} style={{
-                            height: 5, width: i === current ? 18 : 5,
-                            borderRadius: 99, border: 'none', cursor: 'pointer', padding: 0,
+                            height: 6,
+                            width: i === current ? 28 : 6,
+                            borderRadius: 999,
+                            border: 'none',
+                            cursor: 'pointer',
+                            padding: 0,
                             backgroundColor: i === current ? 'var(--color-primary)' : 'var(--color-border-strong)',
-                            transition: 'all 0.25s var(--ease-spring)',
+                            transition: 'all 0.35s cubic-bezier(0.19,1,0.22,1)',
                             touchAction: 'manipulation',
+                            boxShadow: i === current ? '0 0 12px rgba(255,255,255,0.25)' : 'none',
                         }} />
                     ))}
                 </div>
 
-                {/* CTA */}
-                <button onClick={next} className="btn-primary" style={{
-                    width: '100%', height: 44,
-                    borderRadius: 10, fontSize: 13, fontWeight: 700,
+                {/* CTA button */}
+                <button onClick={next} style={{
+                    width: '100%',
+                    height: 52,
+                    borderRadius: 14,
+                    fontSize: 14.5,
+                    fontWeight: 700,
+                    fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
                     letterSpacing: '-0.02em',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-                    boxShadow: 'var(--shadow-md)',
-                    touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 10,
+                    background: 'linear-gradient(145deg, var(--color-primary) 0%, rgba(255,255,255,0.85) 100%)',
+                    color: 'var(--color-bg)',
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: `
+                        0 8px 28px rgba(0,0,0,0.5),
+                        0 0 0 1px rgba(255,255,255,0.1),
+                        inset 0 1px 0 rgba(255,255,255,0.2)
+                    `,
+                    touchAction: 'manipulation',
+                    WebkitTapHighlightColor: 'transparent',
+                    transition: 'all 0.2s ease',
+                    position: 'relative',
+                    overflow: 'hidden',
                 }}>
-                    {isLast ? <>Get Started <ArrowRight style={{ width: 14, height: 14 }} /></> : <>Next <ArrowRight style={{ width: 13, height: 13 }} /></>}
+                    {/* Shimmer effect */}
+                    <div style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                        transform: 'translateX(-100%)',
+                        animation: 'btnShimmer 2.5s ease-in-out infinite',
+                    }} />
+                    <span style={{ position: 'relative', zIndex: 1 }}>
+                        {isLast ? 'Get Started' : 'Next'}
+                    </span>
+                    <ArrowRight style={{ width: 18, height: 18, position: 'relative', zIndex: 1 }} />
                 </button>
 
+                <style>{`
+                    @keyframes btnShimmer {
+                        0%, 100% { transform: translateX(-100%); }
+                        50% { transform: translateX(100%); }
+                    }
+                `}</style>
+
                 <p style={{
-                    textAlign: 'center', fontSize: 10, marginTop: 10,
-                    color: 'var(--color-text-subtle)', fontWeight: 500,
-                    letterSpacing: '0.02em',
+                    textAlign: 'center',
+                    fontSize: 11,
+                    marginTop: 14,
+                    color: 'var(--color-text-subtle)',
+                    fontWeight: 500,
+                    letterSpacing: '0.03em',
                 }}>
                     {current + 1} of {SLIDES.length}
                 </p>
