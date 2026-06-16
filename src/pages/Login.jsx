@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, Zap, ArrowRight, Loader2, CheckCircle, Sparkles, Shield, Clock, Star } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
+import { supabase } from '@/api/supabaseClient';
 
 const FEATURES = [
     { icon: Zap, title: '2,400+ Verified Providers', desc: 'Trusted professionals in your neighborhood' },
@@ -14,7 +15,7 @@ export default function Login() {
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from || '/';
-    const { setUser, setIsAuthenticated } = useAuth();
+    const { setUser, setIsAuthenticated, user } = useAuth();
 
     const [tab, setTab] = useState('login');
     const [email, setEmail] = useState('');
@@ -25,6 +26,13 @@ export default function Login() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
+    // Redirect if already logged in
+    useEffect(() => {
+        if (user) {
+            navigate(from, { replace: true });
+        }
+    }, [user, navigate, from]);
+
     useEffect(() => { setError(''); setSuccess(''); }, [tab]);
 
     const handleSubmit = async (e) => {
@@ -32,35 +40,42 @@ export default function Login() {
         setError('');
         setLoading(true);
         try {
-            const endpoint = tab === 'login' ? '/api/auth/login' : '/api/auth/signup';
-            const body = tab === 'login'
-                ? { email, password }
-                : { email, password, fullName };
-
-            if (tab === 'signup' && !fullName.trim()) {
-                setError('Please enter your full name.');
-                setLoading(false);
-                return;
-            }
-
-            const res = await fetch(endpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body),
-            });
-            const data = await res.json();
-
-            if (!res.ok) {
-                throw new Error(data.error || 'Something went wrong. Please try again.');
-            }
-
             if (tab === 'login') {
-                setUser(data.user);
-                setIsAuthenticated(true);
-                navigate(from, { replace: true });
+                const { data, error: signInError } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+                if (signInError) throw signInError;
+                if (data.user) {
+                    setUser({
+                        id: data.user.id,
+                        email: data.user.email,
+                        full_name: data.user.user_metadata?.full_name || email.split('@')[0]
+                    });
+                    setIsAuthenticated(true);
+                    navigate(from, { replace: true });
+                }
             } else {
-                setSuccess('Account created! You can now sign in.');
-                setTab('login');
+                // Sign up
+                if (!fullName.trim()) {
+                    setError('Please enter your full name.');
+                    setLoading(false);
+                    return;
+                }
+                const { data, error: signUpError } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            full_name: fullName.trim()
+                        }
+                    }
+                });
+                if (signUpError) throw signUpError;
+                if (data.user) {
+                    setSuccess('Account created! You can now sign in.');
+                    setTab('login');
+                }
             }
         } catch (err) {
             setError(err.message || 'Something went wrong. Please try again.');

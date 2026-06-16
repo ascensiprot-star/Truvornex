@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { supabase } from '@/api/supabaseClient';
 
 const AuthContext = createContext();
 
@@ -10,16 +11,37 @@ export const AuthProvider = ({ children }) => {
     const [authChecked, setAuthChecked] = useState(false);
 
     useEffect(() => {
+        // Check initial session
         checkUserAuth();
+
+        // Listen for auth changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (session?.user) {
+                setUser({
+                    id: session.user.id,
+                    email: session.user.email,
+                    full_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0]
+                });
+                setIsAuthenticated(true);
+            } else {
+                setUser(null);
+                setIsAuthenticated(false);
+            }
+        });
+
+        return () => subscription?.unsubscribe();
     }, []);
 
     const checkUserAuth = async () => {
         try {
             setIsLoadingAuth(true);
-            const res = await fetch('/api/auth/user');
-            const data = await res.json();
-            if (data.user) {
-                setUser(data.user);
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) {
+                setUser({
+                    id: session.user.id,
+                    email: session.user.email,
+                    full_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0]
+                });
                 setIsAuthenticated(true);
             } else {
                 setUser(null);
@@ -37,9 +59,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = async (shouldRedirect = true) => {
-        try {
-            await fetch('/api/auth/logout', { method: 'POST' });
-        } catch (_) {}
+        await supabase.auth.signOut();
         setUser(null);
         setIsAuthenticated(false);
         if (shouldRedirect) {
