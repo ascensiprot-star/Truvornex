@@ -184,7 +184,7 @@ export default function Services() {
             {filterOpen && (
                 <>
                     <div className="fixed inset-0 bg-black/40 z-50" onClick={() => setFilterOpen(false)} />
-                    <div className="fixed top-0 right-0 bottom-0 w-80 z-[51] flex flex-col"
+                    <div className="fixed top-0 right-0 bottom-0 w-full max-w-xs sm:max-w-sm z-[51] flex flex-col"
                         style={{ backgroundColor: 'var(--color-surface)', borderLeft: '1px solid var(--color-border)', boxShadow: 'var(--shadow-lg)' }}>
                         <div className="flex items-center justify-between p-5"
                             style={{ borderBottom: '1px solid var(--color-border)' }}>
